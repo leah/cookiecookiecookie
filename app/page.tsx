@@ -1,8 +1,9 @@
 import Image from "next/image";
 
 function Cookie() {
-  let num = Math.floor(Math.random() * 10);
-  let imgSrc = "/cookies/" + num + ".png";
+  let num = Math.ceil(Math.random() * 10);
+  let cacheKey = `?cookie=${num}`;
+  let imgSrc = `/cookies/${num}.png${cacheKey}`;
   
   return (
     <Image
