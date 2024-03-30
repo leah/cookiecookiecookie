@@ -1,30 +1,61 @@
+'use client'
+
+import React, { useState, useEffect, useRef } from 'react';
 import Image from "next/image";
 
-function Cookie() {
-  let num = Math.ceil(Math.random() * 10);
-  let cacheKey = `?cookie=${num}`;
-  let imgSrc = `/cookies/${num}.png${cacheKey}`;
+type Cookie = { id: number, imgSrc: string, left: number, top: number }
+
+function acceptCookies(containerWidth: number, containerHeight: number) {
+  let newCookies = [];
+  let randomAmount = Math.ceil(Math.random() * 5) + 1; // between 2 and 6
   
+  for (let i = 0; i < randomAmount; i++) {
+    let num = Math.ceil(Math.random() * 10);
+    let left = Math.ceil(Math.random() * containerWidth) - 100;
+    let top = Math.ceil(Math.random() * containerHeight) - 100;
+    newCookies.push({ id: i, imgSrc: `/cookies/${num}.png`, left: left, top: top })
+  }
+
+  return newCookies;
+}
+
+function Cookies() {
+  var cookiesRendered = false;
+
+  const [cookies, setCookies] = useState<Cookie[]>([]);
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (cookiesRendered) return; // no idea why this is called twice!
+
+    var newCookies = acceptCookies(ref.current.offsetWidth, ref.current.clientHeight);
+    setCookies(newCookies);
+
+    cookiesRendered = true;
+  }, []);
+
   return (
-    <Image
-      className="relative"
-      src={imgSrc}
-      alt="Cookie"
-      width={200}
-      height={200}
-      priority
-    />
+    <div ref={ref} className="min-h-screen">
+      {cookies.map(cookie => (
+        <Image
+          key={cookie.id}
+          className="absolute"
+          style={{left: cookie.left, top: cookie.top}}
+          src={cookie.imgSrc}
+          alt="Cookie"
+          width={200}
+          height={200}
+          priority
+        />
+      ))}
+    </div>
   );
 }
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Cookie />
-      </div>
-
+    <main className="min-h-screen">
+      <Cookies />
     </main>
   );
 }
