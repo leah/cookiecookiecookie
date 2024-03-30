@@ -5,7 +5,9 @@ import Image from "next/image";
 
 type Cookie = { id: number, imgSrc: string, left: number, top: number }
 
-function acceptCookies(containerWidth: number, containerHeight: number) {
+var cookieIndex = 0;
+
+function createCookies(containerWidth: number, containerHeight: number) {
   let newCookies = [];
   let randomAmount = Math.ceil(Math.random() * 5) + 1; // between 2 and 6
   
@@ -13,7 +15,8 @@ function acceptCookies(containerWidth: number, containerHeight: number) {
     let num = Math.ceil(Math.random() * 10);
     let left = Math.ceil(Math.random() * containerWidth) - 100;
     let top = Math.ceil(Math.random() * containerHeight) - 100;
-    newCookies.push({ id: i, imgSrc: `/cookies/${num}.png`, left: left, top: top })
+    newCookies.push({ id: cookieIndex, imgSrc: `/cookies/${num}.png`, left: left, top: top });
+    cookieIndex++;
   }
 
   return newCookies;
@@ -25,15 +28,46 @@ function Cookies() {
   const [cookies, setCookies] = useState<Cookie[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (cookiesRendered) return; // no idea why this is called twice!
+  function acceptCookies() {
     if (!ref.current) return;
 
-    var newCookies = acceptCookies(ref.current.offsetWidth, ref.current.clientHeight);
-    setCookies(newCookies);
+    var newCookies = createCookies(ref.current.offsetWidth, ref.current.clientHeight);
+    setCookies([...cookies, ...newCookies]);
+  }
+
+  function rejectCookies() {
+    setCookies([]);
+  }
+
+  useEffect(() => {
+    if (cookiesRendered) return; // no idea why useEffect is called twice!
+    
+    // TODO: fetch cookies from cookies!
+    acceptCookies();
 
     cookiesRendered = true;
   }, []);
+
+  function Popup() {
+    return (
+      <div className="fixed bottom-0 left-0">
+        <div className="bg-white rounded-lg shadow-lg p-4">
+          We use cookies to ensure you get the best experience on our website. If you continue to use
+          this site we will assume that you like cookies. Everybody likes cookies.
+          <div>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={acceptCookies}>
+              Accept cookies
+            </button>
+          </div>
+          <div>
+            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={rejectCookies}>
+              Reject cookies
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className="min-h-screen">
@@ -49,6 +83,7 @@ function Cookies() {
           priority
         />
       ))}
+      <Popup />
     </div>
   );
 }
