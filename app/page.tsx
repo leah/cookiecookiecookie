@@ -5,7 +5,7 @@ import Image from "next/image";
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import { Transition } from "@headlessui/react";
 
-type Cookie = { id: number, imgSrc: string, left: number, top: number }
+type Cookie = { id: number, imgSrc: string, centerX: number, centerY: number }
 
 var cookieIndex = 0; // Unique IDs + keys please
 
@@ -15,10 +15,10 @@ function createCookies(containerWidth: number, containerHeight: number) {
   
   for (let i = 0; i < randomAmount; i++) {
     let num = Math.ceil(Math.random() * 10);
-    let left = Math.ceil(Math.random() * containerWidth) - 100;
-    let top = Math.ceil(Math.random() * containerHeight) - 100;
+    let centerX = Math.ceil(Math.random() * containerWidth);
+    let centerY = Math.ceil(Math.random() * containerHeight);
 
-    let cookie = { id: cookieIndex, imgSrc: `/cookies/${num}.png`, left: left, top: top };
+    let cookie = { id: cookieIndex, imgSrc: `/cookies/${num}.png`, centerX: centerX, centerY: centerY };
     newCookies.push(cookie);
     setCookie(null, `cookie-${cookieIndex}`, JSON.stringify(cookie), { maxAge: 30 * 24 * 60 * 60, path: '/'});
 
@@ -110,17 +110,20 @@ function Cookies() {
     );
   }
 
+  // Size cookies based on screen size, max 200
+  const diameter = ref.current? Math.min(ref.current.offsetWidth / 5, 200) : 200;
+
   return (
     <div ref={ref} className="min-h-screen">
       {cookies.map(cookie => (
         <Image
           key={cookie.id}
           className="absolute"
-          style={{left: cookie.left, top: cookie.top}}
+          style={{left: cookie.centerX - diameter / 2, top: cookie.centerY - diameter / 2}}
           src={cookie.imgSrc}
           alt="Cookie"
-          width={200}
-          height={200}
+          width={diameter}
+          height={diameter}
           priority
         />
       ))}
