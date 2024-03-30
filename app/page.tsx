@@ -23,10 +23,11 @@ function Cookies() {
   var cookiesRendered = false;
 
   const [cookies, setCookies] = useState<Cookie[]>([]);
-  const ref = useRef(null)
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (cookiesRendered) return; // no idea why this is called twice!
+    if (!ref.current) return;
 
     var newCookies = acceptCookies(ref.current.offsetWidth, ref.current.clientHeight);
     setCookies(newCookies);
