@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from "next/image";
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
+import { Transition } from "@headlessui/react";
 
 type Cookie = { id: number, imgSrc: string, left: number, top: number }
 
@@ -30,6 +31,7 @@ function createCookies(containerWidth: number, containerHeight: number) {
 function Cookies() {
   var cookiesRendered = false;
 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [cookies, setCookies] = useState<Cookie[]>([]);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -67,27 +69,43 @@ function Cookies() {
     let lastCookie = initialCookies.slice(-1)[0];
     if (lastCookie) cookieIndex = lastCookie.id + 1;
 
+    // display popup
+    setIsPopupOpen(true);
+
     cookiesRendered = true;
   }, []);
 
   function Popup() {
     return (
-      <div className="fixed bottom-0 left-0 p-6">
-        <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-4 space-y-2">
-          <p>We use cookies to ensure you get the best experience on our website. If you continue to use
-          this site we will assume that you like cookies. Everybody likes cookies.
-          </p>
-          <div>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={acceptCookies}>
-              Accept cookies
-            </button>
+      <div>
+        <Transition
+          appear={true}
+          show={isPopupOpen}
+          enter="transition-opacity duration-1000 delay-1000"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-1000 delay-1000"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed bottom-0 left-0 p-6">
+              <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-4 space-y-2">
+                <p>We use cookies to ensure you get the best experience on our website. If you continue to use
+                this site we will assume that you like cookies. Everybody likes cookies.
+                </p>
+                <div>
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={acceptCookies}>
+                    Accept cookies
+                  </button>
+                </div>
+                <div>
+                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={rejectCookies}>
+                    Reject cookies
+                  </button>
+                </div>
+              </div>
           </div>
-          <div>
-            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={rejectCookies}>
-              Reject cookies
-            </button>
-          </div>
-        </div>
+        </Transition>
       </div>
     );
   }
