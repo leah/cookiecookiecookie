@@ -2,20 +2,25 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from "next/image";
+import { parseCookies, setCookie, destroyCookie } from 'nookies';
 
 type Cookie = { id: number, imgSrc: string, left: number, top: number }
 
-var cookieIndex = 0;
+var cookieIndex = 0; // Unique IDs + keys please
 
 function createCookies(containerWidth: number, containerHeight: number) {
-  let newCookies = [];
+  let newCookies: Cookie[] = [];
   let randomAmount = Math.ceil(Math.random() * 5) + 1; // between 2 and 6
   
   for (let i = 0; i < randomAmount; i++) {
     let num = Math.ceil(Math.random() * 10);
     let left = Math.ceil(Math.random() * containerWidth) - 100;
     let top = Math.ceil(Math.random() * containerHeight) - 100;
-    newCookies.push({ id: cookieIndex, imgSrc: `/cookies/${num}.png`, left: left, top: top });
+
+    let cookie = { id: cookieIndex, imgSrc: `/cookies/${num}.png`, left: left, top: top };
+    newCookies.push(cookie);
+    setCookie(null, `cookie-${cookieIndex}`, JSON.stringify(cookie), { maxAge: 30 * 24 * 60 * 60, path: '/'});
+
     cookieIndex++;
   }
 
@@ -37,13 +42,30 @@ function Cookies() {
 
   function rejectCookies() {
     setCookies([]);
+
+    const parsedCookies = parseCookies();
+    Object.keys(parsedCookies).forEach(cookieName => {
+      destroyCookie(null, cookieName, { path: '/' });
+    })
   }
 
   useEffect(() => {
     if (cookiesRendered) return; // no idea why useEffect is called twice!
+
+    let initialCookies: Cookie[] = [];
+    const parsedCookies = parseCookies(); // get all stored cookies
     
-    // TODO: fetch cookies from cookies!
-    acceptCookies();
+    Object.values(parsedCookies).forEach(cookieData => {
+      initialCookies.push(JSON.parse(cookieData));
+    })
+
+    initialCookies.sort((a, b) => a.id - b.id); // sort by index so they are layered as before
+    
+    setCookies(initialCookies);
+
+    // update index to add new cookies with unique IDs
+    let lastCookie = initialCookies.slice(-1)[0];
+    if (lastCookie) cookieIndex = lastCookie.id + 1;
 
     cookiesRendered = true;
   }, []);
