@@ -81,10 +81,10 @@ function Cookies() {
         <Transition
           appear={true}
           show={isPopupOpen}
-          enter="transition-opacity duration-1000 delay-1000"
+          enter="transition-opacity duration-1000 delay-500"
           enterFrom="opacity-0"
           enterTo="opacity-100"
-          leave="transition-opacity duration-1000 delay-1000"
+          leave="transition-opacity duration-1000 delay-500"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
