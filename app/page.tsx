@@ -99,7 +99,7 @@ function Cookies() {
                   </button>
                 </div>
                 <div>
-                  <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={rejectCookies}>
+                  <button className="bg-rose-500 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded" onClick={rejectCookies}>
                     Reject cookies
                   </button>
                 </div>
