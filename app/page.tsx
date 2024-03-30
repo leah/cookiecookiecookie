@@ -135,6 +135,11 @@ function Cookies() {
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen -m-16">
+        <h1 className="text-purpleblue text-4xl">
+          cookie cookie cookie
+        </h1>
+      </div>
       <Cookies />
     </main>
   );
