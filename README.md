@@ -1,6 +1,14 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cookie cookie cookie
+
+Me want cookies. 🍪
+
+Try it: [cookie cookie cookie](https://cookiecookiecookie.com)
+
+Created by [leah](https://github.com/leah) for [Silly Hacks 2024](https://lu.ma/silly).
 
 ## Getting Started
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 First, run the development server:
 
