@@ -17,10 +17,6 @@ const config: Config = {
       colors: {
         'purpleblue': '#d3d1e3',
       },
-
-      fontFamily: {
-        'coiny' : ['Coiny', 'sans-serif'],
-      },
     },
   },
   plugins: [],
