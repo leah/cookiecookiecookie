@@ -38,15 +38,11 @@ function Cookies() {
   function acceptCookies() {
     if (!ref.current) return;
 
-    new Audio("/sounds/nomnomnom.mp3").play();
-
     var newCookies = createCookies(ref.current.offsetWidth, ref.current.clientHeight);
     setCookies([...cookies, ...newCookies]);
   }
 
   function rejectCookies() {
-    new Audio("/sounds/aww.mp3").play();
-
     setCookies([]);
 
     const parsedCookies = parseCookies();
