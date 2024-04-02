@@ -58,7 +58,25 @@ function Cookies() {
     const parsedCookies = parseCookies(); // get all stored cookies
     
     Object.values(parsedCookies).forEach(cookieData => {
-      initialCookies.push(JSON.parse(cookieData));
+      try {
+        const cookie = JSON.parse(cookieData)
+
+        // Check cookie is a valid Cookie
+        if (
+          typeof cookie.id !== 'number' ||
+          typeof cookie.imgSrc !== 'string' ||
+          typeof cookie.centerX !== 'number' ||
+          typeof cookie.centerY !== 'number'
+        ) {
+          throw new Error('Invalid Cookie');
+        } else {
+          initialCookies.push(cookie)
+        }
+      } catch (e) {
+        console.error('Error parsing cookie data:')
+        console.log(cookieData)
+        console.log(e)
+      }
     })
 
     initialCookies.sort((a, b) => a.id - b.id); // sort by index so they are layered as before
