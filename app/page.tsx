@@ -57,11 +57,12 @@ function Cookies() {
     let initialCookies: Cookie[] = [];
     const parsedCookies = parseCookies(); // get all stored cookies
     
-    Object.values(parsedCookies).forEach(cookieData => {
+    Object.entries(parsedCookies).forEach(cookieData => {
       try {
-        const cookie = JSON.parse(cookieData)
+        // JSON.parse throws an error if it fails
+        const cookie = JSON.parse(cookieData[1])
 
-        // Check cookie is a valid Cookie
+        // Check cookie is a valid Cookie, throw our own error if not
         if (
           typeof cookie.id !== 'number' ||
           typeof cookie.imgSrc !== 'string' ||
@@ -69,13 +70,14 @@ function Cookies() {
           typeof cookie.centerY !== 'number'
         ) {
           throw new Error('Invalid Cookie');
-        } else {
-          initialCookies.push(cookie)
         }
+
+        initialCookies.push(cookie)
       } catch (e) {
-        console.error('Error parsing cookie data:')
-        console.log(cookieData)
-        console.log(e)
+        console.error('Error parsing cookie', {
+          key: cookieData[0],
+          value: cookieData[1],
+        })
       }
     })
 
